@@ -1,34 +1,69 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [cookies, setCookies] = useState(0)
+  const [multiplier, setMultiplier] = useState(1)
+  const [autoClickerCount, setAutoClickerCount] = useState(0)
+
+  // Auto clicker effect
+  useState(() => {
+    const interval = setInterval(() => {
+      setCookies(c => c + (autoClickerCount * multiplier))
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [autoClickerCount, multiplier])
+
+  const clickCookie = () => {
+    setCookies(c => c + multiplier)
+  }
+
+  const buyMultiplier = () => {
+    const cost = Math.floor(50 * Math.pow(1.5, multiplier - 1))
+    if (cookies >= cost) {
+      setCookies(c => c - cost)
+      setMultiplier(m => m + 1)
+    }
+  }
+
+  const buyAutoClicker = () => {
+    const cost = Math.floor(100 * Math.pow(1.5, autoClickerCount))
+    if (cookies >= cost) {
+      setCookies(c => c - cost)
+      setAutoClickerCount(ac => ac + 1)
+    }
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="cookie-clicker">
+      <h1>Cookie Clicker</h1>
+      
+      <div className="stats">
+        <p>Cookies: {Math.floor(cookies)}</p>
+        <p>Multiplier: {multiplier}x</p>
+        <p>Auto Clickers: {autoClickerCount}</p>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+
+      <button className="cookie-button" onClick={clickCookie}>
+        🍪
+      </button>
+
+      <div className="upgrades">
+        <button 
+          onClick={buyMultiplier}
+          disabled={cookies < Math.floor(50 * Math.pow(1.5, multiplier - 1))}
+        >
+          Buy Multiplier ({Math.floor(50 * Math.pow(1.5, multiplier - 1))} cookies)
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+
+        <button
+          onClick={buyAutoClicker}
+          disabled={cookies < Math.floor(100 * Math.pow(1.5, autoClickerCount))}
+        >
+          Buy Auto Clicker ({Math.floor(100 * Math.pow(1.5, autoClickerCount))} cookies)
+        </button>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
   )
 }
 

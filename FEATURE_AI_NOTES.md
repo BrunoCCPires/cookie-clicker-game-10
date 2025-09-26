@@ -1,0 +1,1 @@
+Basic cookie clicker implementation with multipliers and auto clickers. Click the cookie to earn cookies, then spend them on upgrades. No additional dependencies required.
